@@ -25,22 +25,34 @@ std::vector<std::vector<int>> creation() {
 	return vect;
  }
 void moveZeroRows(std::vector<std::vector<int>>& matrix) {
+	std::vector<std::vector<int>> matrixOut;
+
+	//Find Zero Rows
+	int zeros{ 0 };
+	std::vector<int> zeroRow;
 	for (int r{ 0 }; r < matrix.size(); r++) {
 		bool allZeros{ true };
 		std::vector<int> line;
 
 		for (int c{ 0 }; c < matrix[r].size(); c++) {
 			//Check if a nonzero is found
-			if (matrix[r][c] != 0) { allZeros = false; }
+			if (matrix[r][c] != 0) { 
+				allZeros = false;
+			}
 		}
 
 		//Copy the Row of zeros, and remove
 		if (allZeros) {
-			std::vector<int> test = matrix.at(r);
+			zeroRow = matrix.at(r);
+			zeros++;
 			matrix.erase(matrix.begin() + r);
-			matrix.push_back(test);
+			r--;
 		}
-		
+	}
+
+	//Make new Matrix to be returned
+	for (int i{ 0 }; i < zeros; i++) {
+		matrix.push_back(zeroRow);
 	}
 }
 void print(std::vector<std::vector<int>> matrix) {
@@ -54,20 +66,36 @@ void print(std::vector<std::vector<int>> matrix) {
 }
 
 //Testing
-//void echelon(std::vector<std::vector<int>>& matrix) {
-//	int lowest{ 0 };
-//	int row{ -1 };
-//	for (int r{ 0 }; r < matrix.size(); r++) {
-//		for (int c{ 0 }; c < matrix[r].size(); c++) {
-//
-//		}
-//	}
-//}
+void echelon(std::vector<std::vector<int>>& matrix) {
+	int position{ 0 };
+	int lowest{ 0 };
+	int row{ -1 };
+	for (int i{ 0 }; i < matrix[0].size(); i++) {
+
+		for (int r{ 0 }; r < matrix.size(); r++) {
+			for (int c{ 0 }; c < matrix[r].size(); c++) {
+				
+			}
+		}
+
+	}
+
+
+
+	int lowest{ 0 };
+	int row{ -1 };
+	for (int r{ 0 }; r < matrix.size(); r++) {
+		for (int c{ 0 }; c < matrix[r].size(); c++) {
+
+		}
+	}
+}
 
 int main() {
 	bool echelonForm{ false };
 	bool reducedEchelonForm{ false };
 	std::vector<std::vector<int>> matrix = creation();
+
 	moveZeroRows(matrix);
 
 	print(matrix);
