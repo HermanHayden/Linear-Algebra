@@ -24,9 +24,7 @@ std::vector<std::vector<int>> creation() {
 
 	return vect;
  }
-void moveZeroRows(std::vector<std::vector<int>>& matrix) {
-	std::vector<std::vector<int>> matrixOut;
-
+void echelon(std::vector<std::vector<int>>& matrix) {
 	//Find Zero Rows
 	int zeros{ 0 };
 	std::vector<int> zeroRow;
@@ -50,13 +48,6 @@ void moveZeroRows(std::vector<std::vector<int>>& matrix) {
 		}
 	}
 
-	//Make new Matrix to be returned
-	for (int i{ 0 }; i < zeros; i++) {
-		matrix.push_back(zeroRow);
-	}
-}
-void echelon(std::vector<std::vector<int>>& matrix) {
-
 	std::vector<std::vector<int>> newMatrix;
 
 	int test = matrix[0].size();
@@ -71,6 +62,11 @@ void echelon(std::vector<std::vector<int>>& matrix) {
 	}
 
 	matrix = newMatrix;
+
+	//Make new Matrix to be returned
+	for (int i{ 0 }; i < zeros; i++) {
+		matrix.push_back(zeroRow);
+	}
 }
 void print(std::vector<std::vector<int>> matrix) {
 	std::cout << "\n";
@@ -89,7 +85,6 @@ int main() {
 	bool reducedEchelonForm{ false };
 	std::vector<std::vector<int>> matrix = creation();
 
-	moveZeroRows(matrix);
 	echelon(matrix);
 
 	print(matrix);
