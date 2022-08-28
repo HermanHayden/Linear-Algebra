@@ -55,6 +55,23 @@ void moveZeroRows(std::vector<std::vector<int>>& matrix) {
 		matrix.push_back(zeroRow);
 	}
 }
+void echelon(std::vector<std::vector<int>>& matrix) {
+
+	std::vector<std::vector<int>> newMatrix;
+
+	int test = matrix[0].size();
+	for (int c{ 0 }; c < test; c++) {
+		for (int r{ 0 }; r < matrix.size(); r++) {
+			if (matrix.size() > 0 && matrix[r][c] != 0) {
+				newMatrix.push_back(matrix[r]);
+				matrix.erase(matrix.begin() + r);
+				r -= 1;
+			}
+		}
+	}
+
+	matrix = newMatrix;
+}
 void print(std::vector<std::vector<int>> matrix) {
 	std::cout << "\n";
 	for (int r{ 0 }; r < matrix.size(); r++) {
@@ -66,30 +83,6 @@ void print(std::vector<std::vector<int>> matrix) {
 }
 
 //Testing
-void echelon(std::vector<std::vector<int>>& matrix) {
-	int position{ 0 };
-	int lowest{ 0 };
-	int row{ -1 };
-	for (int i{ 0 }; i < matrix[0].size(); i++) {
-
-		for (int r{ 0 }; r < matrix.size(); r++) {
-			for (int c{ 0 }; c < matrix[r].size(); c++) {
-				
-			}
-		}
-
-	}
-
-
-
-	int lowest{ 0 };
-	int row{ -1 };
-	for (int r{ 0 }; r < matrix.size(); r++) {
-		for (int c{ 0 }; c < matrix[r].size(); c++) {
-
-		}
-	}
-}
 
 int main() {
 	bool echelonForm{ false };
@@ -97,6 +90,7 @@ int main() {
 	std::vector<std::vector<int>> matrix = creation();
 
 	moveZeroRows(matrix);
+	echelon(matrix);
 
 	print(matrix);
 
