@@ -69,7 +69,7 @@ void echelon(std::vector<std::vector<float>>& matrix) {
 	}
 }
 void print(std::vector<std::vector<float>> matrix) {
-	std::cout << "\n";
+	//std::cout << "\n";
 	for (int r{ 0 }; r < matrix.size(); r++) {
 		for (int c{ 0 }; c < matrix[r].size(); c++) {
 			std::cout << matrix[r][c] << " ";
@@ -88,50 +88,58 @@ void printRow(std::vector<float> matrix) {
 void fixLeading(std::vector<std::vector<float>>& matrix) {
 	float leading = matrix.at(0).at(0);
 	float rows = matrix.size();
-	bool turn{ matrix.at(0).at(0) != 1 };
+	bool turn{ true/*matrix.at(0).at(0) != 1*/ };
 
 	//ADD
 	for (int r{ 1 }; (r < rows && turn); r++) {
 		if (leading + matrix[r][0] == 1) {
-			std::cout << "R1 + R" << r + 1 << " -> R1\n";
+			std::cout << "\nR1 + R" << r + 1 << " -> R1\n";
 			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] += matrix[r][c]; }
 			turn = false;
+			//print(matrix);
 		}
 	}
 	//SUB
 	for (int r{ 1 }; r < rows && turn; r++) {
 		if (leading - matrix[r][0] == 1) {
-			std::cout << "R1 - R" << r + 1 << " -> R1\n";
+			std::cout << "\nR1 - R" << r + 1 << " -> R1\n";
 			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] -= matrix[r][c]; }
 			turn = false;
+			//print(matrix);
 		}
 	}
-	//Self DIV
-	if (turn) {
+
+	if (turn && leading != 1) {
 		if (leading < 0) {
-			std::cout << "-1/" << leading << "R1 -> R1\n";
+			std::cout << "\n-1/" << leading << "R1 -> R1\n";
 			for (float& x : matrix[0]) { x /= -leading; }
 		} else {
-			std::cout << "1/" << leading << "R1 -> R1\n";
+			std::cout << "\n1/" << leading << "R1 -> R1\n";
 			for (float& x : matrix[0]) { x /= leading; }
 		}
+		turn = false;
+	}
+
+	if (!turn) {
+		print(matrix);
 	}
 
 }
 void fixFollowingRows(std::vector<std::vector<float>>& matrix) {
 	float leading = matrix.at(0).at(0);
 	float rows = matrix.size();
+	std::cout << "\n";
 
 	for (int r{ 1 }; r < matrix.size(); r++) {
 		if (matrix[r][0] != 0) {
 			float rowLeading{ matrix[r][0] };
 			if (rowLeading < 0) {
-				std::cout << "R" << r + 1 << " + " << (rowLeading * -1) << "R1 -> R" << r + 1;
+				std::cout << "R" << r + 1 << " + " << (rowLeading * -1) << "R1 -> R" << r + 1 << "\n";
 				for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[r][c] += -1 * rowLeading * matrix[0][c]; }
 
 			}
 			else {
-				std::cout << "R" << r + 1 << " - " << rowLeading << "R1 -> R" << r + 1;
+				std::cout << "R" << r + 1 << " - " << rowLeading << "R1 -> R" << r + 1 << "\n";
 				for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[r][c] -= rowLeading * matrix[0][c]; }
 			}
 		}
@@ -174,6 +182,7 @@ int main() {
 	echelon(matrix);
 	reducedEchelon(matrix);
 
+	std::cout << "\nFinal Matrix\n";
 	print(matrix);
 
 }
