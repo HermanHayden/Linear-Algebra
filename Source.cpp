@@ -3,19 +3,19 @@
 #include <vector>
 
 //Finsished
-std::vector<std::vector<int>> creation() {
+std::vector<std::vector<float>> creation() {
 	std::cout << "Dimensions: ";
-	int row{ 0 };
-	int col{ 0 };
+	float row{ 0 };
+	float col{ 0 };
 	std::cin >> row;
 	std::cin >> col;
 
-	std::vector<std::vector<int>> vect;
+	std::vector<std::vector<float>> vect;
 
 	for (int r{ 0 }; r < row; r++) {
-		std::vector<int> test;
+		std::vector<float> test;
 		for (int c{ 0 }; c < col; c++) {
-			int input{ 0 };
+			float input{ 0 };
 			std::cin >> input;
 			test.push_back(input);
 		}
@@ -24,13 +24,13 @@ std::vector<std::vector<int>> creation() {
 
 	return vect;
  }
-void echelon(std::vector<std::vector<int>>& matrix) {
+void echelon(std::vector<std::vector<float>>& matrix) {
 	//Find Zero Rows
 	int zeros{ 0 };
-	std::vector<int> zeroRow;
+	std::vector<float> zeroRow;
 	for (int r{ 0 }; r < matrix.size(); r++) {
 		bool allZeros{ true };
-		std::vector<int> line;
+		std::vector<float> line;
 
 		for (int c{ 0 }; c < matrix[r].size(); c++) {
 			//Check if a nonzero is found
@@ -48,10 +48,10 @@ void echelon(std::vector<std::vector<int>>& matrix) {
 		}
 	}
 
-	std::vector<std::vector<int>> newMatrix;
+	std::vector<std::vector<float>> newMatrix;
 
-	int test = matrix[0].size();
-	for (int c{ 0 }; c < test; c++) {
+	int rows = matrix[0].size();
+	for (int c{ 0 }; c < rows; c++) {
 		for (int r{ 0 }; r < matrix.size(); r++) {
 			if (matrix.size() > 0 && matrix[r][c] != 0) {
 				newMatrix.push_back(matrix[r]);
@@ -68,7 +68,7 @@ void echelon(std::vector<std::vector<int>>& matrix) {
 		matrix.push_back(zeroRow);
 	}
 }
-void print(std::vector<std::vector<int>> matrix) {
+void print(std::vector<std::vector<float>> matrix) {
 	std::cout << "\n";
 	for (int r{ 0 }; r < matrix.size(); r++) {
 		for (int c{ 0 }; c < matrix[r].size(); c++) {
@@ -78,14 +78,70 @@ void print(std::vector<std::vector<int>> matrix) {
 	}
 }
 
+void printRow(std::vector<float> matrix) {
+	for (auto x : matrix) {
+		std::cout << x << " ";
+	}
+	std::cout << "\n";
+}
+
 //Testing
+void fixRow(std::vector<std::vector<float>> matrix) {
+	std::cout << "Size After: " << matrix.size() << "\n";
+	float leading = matrix.at(0).at(0);
+	float rows = matrix.size();
+	//ADD
+	for (int r{ 1 }; r < rows; r++) {
+		if (leading + matrix[r][0] == 1) {
+			std::cout << "R1 + R" << r + 1 << " -> R1\n";
+			for (float x : matrix[0]) { x += matrix[r][0]; }
+		}
+	}
+	//SUB
+	for (int r{ 1 }; r < rows; r++) {
+		/*if (leading - matrix[r][0] == 1) {
+			std::cout << "R1 - R" << r + 1 << " -> R1\n";
+			//for (float x : matrix[0]) { x += matrix[r][0]; }
+		}*/
+	}
+
+}
+
+void reducedEchelon(std::vector<std::vector<float>>& matrix) {
+	std::vector<std::vector<float>> finalMatrix;
+
+	int rows = matrix[0].size();
+	for (int c{ 0 }; c < rows; c++) {
+		std::vector<std::vector<float>> newMatrix;
+		for (int r{ 0 }; r < matrix.size(); r++) {
+			if (matrix.size() > 0 && matrix[r][c] != 0) {
+				newMatrix.push_back(matrix[r]);
+				matrix.erase(matrix.begin() + r);
+				r -= 1;
+			}
+		}
+
+		//std::cout << "NEW MATRIX ROW\n";
+		std::cout << "Size Before: " << newMatrix.size() << "\n";
+		//print(newMatrix);
+		//std::cout << "END\n";
+
+		fixRow(newMatrix);
+		for (std::vector<float> x : newMatrix) {
+			finalMatrix.push_back(x);
+		}
+	}
+
+	matrix = finalMatrix;
+}
 
 int main() {
 	bool echelonForm{ false };
 	bool reducedEchelonForm{ false };
-	std::vector<std::vector<int>> matrix = creation();
+	std::vector<std::vector<float>> matrix = creation();
 
 	echelon(matrix);
+	reducedEchelon(matrix);
 
 	print(matrix);
 
