@@ -77,7 +77,6 @@ void print(std::vector<std::vector<float>> matrix) {
 		std::cout << "\n";
 	}
 }
-
 void printRow(std::vector<float> matrix) {
 	for (auto x : matrix) {
 		std::cout << x << " ";
@@ -86,25 +85,57 @@ void printRow(std::vector<float> matrix) {
 }
 
 //Testing
-void fixRow(std::vector<std::vector<float>> matrix) {
-	std::cout << "Size After: " << matrix.size() << "\n";
+void fixLeading(std::vector<std::vector<float>>& matrix) {
 	float leading = matrix.at(0).at(0);
 	float rows = matrix.size();
+	bool turn{ matrix.at(0).at(0) != 1 };
+
 	//ADD
-	for (int r{ 1 }; r < rows; r++) {
+	for (int r{ 1 }; (r < rows && turn); r++) {
 		if (leading + matrix[r][0] == 1) {
 			std::cout << "R1 + R" << r + 1 << " -> R1\n";
-			for (float x : matrix[0]) { x += matrix[r][0]; }
+			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] += matrix[r][c]; }
+			turn = false;
 		}
 	}
 	//SUB
-	for (int r{ 1 }; r < rows; r++) {
-		/*if (leading - matrix[r][0] == 1) {
+	for (int r{ 1 }; r < rows && turn; r++) {
+		if (leading - matrix[r][0] == 1) {
 			std::cout << "R1 - R" << r + 1 << " -> R1\n";
-			//for (float x : matrix[0]) { x += matrix[r][0]; }
-		}*/
+			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] -= matrix[r][c]; }
+			turn = false;
+		}
+	}
+	//Self DIV
+	if (turn) {
+		if (leading < 0) {
+			std::cout << "-1/" << leading << "R1 -> R1\n";
+			for (float& x : matrix[0]) { x /= -leading; }
+		} else {
+			std::cout << "1/" << leading << "R1 -> R1\n";
+			for (float& x : matrix[0]) { x /= leading; }
+		}
 	}
 
+}
+void fixFollowingRows(std::vector<std::vector<float>>& matrix) {
+	float leading = matrix.at(0).at(0);
+	float rows = matrix.size();
+
+	for (int r{ 1 }; r < matrix.size(); r++) {
+		if (matrix[r][0] != 0) {
+			float rowLeading{ matrix[r][0] };
+			if (rowLeading < 0) {
+				std::cout << "R" << r + 1 << " + " << (rowLeading * -1) << "R1 -> R" << r + 1;
+				for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[r][c] += -1 * rowLeading * matrix[0][c]; }
+
+			}
+			else {
+				std::cout << "R" << r + 1 << " - " << rowLeading << "R1 -> R" << r + 1;
+				for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[r][c] -= rowLeading * matrix[0][c]; }
+			}
+		}
+	}
 }
 
 void reducedEchelon(std::vector<std::vector<float>>& matrix) {
@@ -121,12 +152,12 @@ void reducedEchelon(std::vector<std::vector<float>>& matrix) {
 			}
 		}
 
-		//std::cout << "NEW MATRIX ROW\n";
-		std::cout << "Size Before: " << newMatrix.size() << "\n";
-		//print(newMatrix);
-		//std::cout << "END\n";
-
-		fixRow(newMatrix);
+		if (newMatrix.size() != 0) {
+			fixLeading(newMatrix);
+			if (newMatrix.size() != 1) {
+				fixFollowingRows(newMatrix);
+			}
+		}
 		for (std::vector<float> x : newMatrix) {
 			finalMatrix.push_back(x);
 		}
