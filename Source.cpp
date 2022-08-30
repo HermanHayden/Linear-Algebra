@@ -85,14 +85,14 @@ void printRow(std::vector<float> matrix) {
 }
 
 //Testing
-void fixLeading(std::vector<std::vector<float>>& matrix) {
-	float leading = matrix.at(0).at(0);
+void fixLeading(std::vector<std::vector<float>>& matrix, int leadingPos) {
+	float leading = matrix.at(0).at(leadingPos);
 	float rows = matrix.size();
 	bool turn{ true/*matrix.at(0).at(0) != 1*/ };
 
 	//ADD
 	for (int r{ 1 }; (r < rows && turn); r++) {
-		if (leading + matrix[r][0] == 1) {
+		if (leading + matrix[r][leadingPos] == 1) {
 			std::cout << "\nR1 + R" << r + 1 << " -> R1\n";
 			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] += matrix[r][c]; }
 			turn = false;
@@ -101,7 +101,7 @@ void fixLeading(std::vector<std::vector<float>>& matrix) {
 	}
 	//SUB
 	for (int r{ 1 }; r < rows && turn; r++) {
-		if (leading - matrix[r][0] == 1) {
+		if (leading - matrix[r][leadingPos] == 1) {
 			std::cout << "\nR1 - R" << r + 1 << " -> R1\n";
 			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] -= matrix[r][c]; }
 			turn = false;
@@ -161,7 +161,8 @@ void reducedEchelon(std::vector<std::vector<float>>& matrix) {
 		}
 
 		if (newMatrix.size() != 0) {
-			fixLeading(newMatrix);
+			std::cout << "TEST: " << c << "\n";
+			fixLeading(newMatrix, c);
 			if (newMatrix.size() != 1) {
 				fixFollowingRows(newMatrix);
 			}
