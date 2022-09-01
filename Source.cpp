@@ -85,14 +85,14 @@ void printRow(std::vector<float> matrix) {
 }
 
 //Testing
-void fixLeading(std::vector<std::vector<float>>& matrix, int leadingPos) {
-	float leading = matrix.at(0).at(leadingPos);
+void fixLeading(std::vector<std::vector<float>>& matrix) {
+	float leading = matrix.at(0).at(0);
 	float rows = matrix.size();
 	bool turn{ true/*matrix.at(0).at(0) != 1*/ };
 
-	//ADD
+	/*//ADD
 	for (int r{ 1 }; (r < rows && turn); r++) {
-		if (leading + matrix[r][leadingPos] == 1) {
+		if (leading + matrix[r][0] == 1) {
 			std::cout << "\nR1 + R" << r + 1 << " -> R1\n";
 			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] += matrix[r][c]; }
 			turn = false;
@@ -101,13 +101,13 @@ void fixLeading(std::vector<std::vector<float>>& matrix, int leadingPos) {
 	}
 	//SUB
 	for (int r{ 1 }; r < rows && turn; r++) {
-		if (leading - matrix[r][leadingPos] == 1) {
+		if (leading - matrix[r][0] == 1) {
 			std::cout << "\nR1 - R" << r + 1 << " -> R1\n";
 			for (int c{ 0 }; c < matrix[0].size(); c++) { matrix[0][c] -= matrix[r][c]; }
 			turn = false;
 			//print(matrix);
 		}
-	}
+	}*/
 
 	if (turn && leading != 1) {
 		if (leading < 0) {
@@ -147,32 +147,22 @@ void fixFollowingRows(std::vector<std::vector<float>>& matrix) {
 }
 
 void reducedEchelon(std::vector<std::vector<float>>& matrix) {
-	std::vector<std::vector<float>> finalMatrix;
+	int startPos{ -1 };
+	int endPos{ -1 };
 
-	int rows = matrix[0].size();
-	for (int c{ 0 }; c < rows; c++) {
-		std::vector<std::vector<float>> newMatrix;
+	for (int c{ 0 }; c < matrix[0].size(); c++) {
+		startPos = -1;
+		endPos = -1;
+
 		for (int r{ 0 }; r < matrix.size(); r++) {
-			if (matrix.size() > 0 && matrix[r][c] != 0) {
-				newMatrix.push_back(matrix[r]);
-				matrix.erase(matrix.begin() + r);
-				r -= 1;
+			if (matrix[r][c] != 0) {
+				if (startPos < 0) { startPos = r; }
+				endPos = r;
 			}
 		}
 
-		if (newMatrix.size() != 0) {
-			std::cout << "TEST: " << c << "\n";
-			fixLeading(newMatrix, c);
-			if (newMatrix.size() != 1) {
-				fixFollowingRows(newMatrix);
-			}
-		}
-		for (std::vector<float> x : newMatrix) {
-			finalMatrix.push_back(x);
-		}
 	}
 
-	matrix = finalMatrix;
 }
 
 int main() {
@@ -185,5 +175,4 @@ int main() {
 
 	std::cout << "\nFinal Matrix\n";
 	print(matrix);
-
 }
